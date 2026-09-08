@@ -31,22 +31,55 @@ def isolement_im(l,c):
 imred= im2[::,::,0]
 imgreen= im2[::,::,1]
 imblue= im2[::,::,2]
+
 # on observe que les couleurs affichées ne sont pas les bonnes
 
 im3= im.copy()
-im3[-200:,-200:] = [219,112,147]
+im3[-200:,-200:] = [255,255,255]
+im3[-200: : 2,-200:] = [255,0,0]
+
+#nouvelle image transparente
+
+x,y = im.shape[:2]
+transp = np.empty((x,y,4), dtype=im.dtype)
+transp[:,:,:3] = im2 #ici il faut slicer l'image d'origine car on avait rajouté une dimension
+transp[:,:, 3]= 128
+
+# image float
+
+imfloat = np.empty((x,y,3)) # on remet pas le type de l'image originale sinon cela n'accepte pas les floats
+imfloat[:,:,: ]= (im2[:,:,:]/255.0) 
+
+# image de gris
+imfloat[:,:,0]= (imfloat[:,:,0]+imfloat[:,:,1]+imfloat[:,:,2])/3
+imfloat[:,:,1]= imfloat[:,:,0]
+imfloat[:,:,2]= imfloat[:,:,0]
+
+# image en contraste corrigé
+imfloat2 = np.empty((x,y,3))
+imfloat2[:,:,: ]= (im2[:,:,:]/255.0)
+
+imfloat2[:,:,0]= (0.299*imfloat2[:,:,0]+0.587*imfloat2[:,:,1]+0.114*imfloat2[:,:,2])
+imfloat2[:,:,1]= imfloat2[:,:,0]
+imfloat2[:,:,2]= imfloat2[:,:,0]
 
 """---affichage---"""
 #plt.imshow(im2[:10,:10]) # on slice le tableau et on affiche le coin du haut en 10*10
 #for i in [2,5,10,20]: #on crée chaque image successivement
-#    plt.imshow(im2[::i,::i])
- #   plt.show()
+#plt.imshow(im2[::i,::i])
+#plt.show()
 #plt.imshow(isolement_im(100,200))
 
+plt.imshow(imfloat2)
+plt.show()
 
 """
 plt.imshow(im3)
 plt.show()
+plt.imshow(im3[-20:,-20:])
+plt.show()
+"""
+"""
 plt.imshow(imred,cmap='Reds')
 plt.show()
 plt.imshow(imred,cmap='Greens')
@@ -55,4 +88,4 @@ plt.imshow(imred,cmap='Blues')
 """
 #plt.imshow(image)# on affiche l'image colorée
 #plt.imshow(im) #on affiche l'image des mines
-plt.show()
+#plt.show()
